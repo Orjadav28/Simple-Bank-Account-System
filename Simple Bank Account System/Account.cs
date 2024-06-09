@@ -6,48 +6,56 @@ using System.Threading.Tasks;
 
 namespace Simple_Bank_Account_System
 {
-    public class Account
+    public class Account : ITransaction
     {
         public string AccountNumber { get; set; }
         public string AccountHolderName { get; set; }
-        public decimal Balance { get; private set; }
+        public decimal Balance { get; protected set; }
+        public List<string> TransactionHistory { get; private set; }
 
         public Account(string accountNumber, string accountHolderName, decimal initialBalance)
         {
             AccountNumber = accountNumber;
             AccountHolderName = accountHolderName;
             Balance = initialBalance;
+            TransactionHistory = new List<string>();
         }
 
-        public void Deposit(decimal amount)
+        public virtual void Deposit(decimal amount)
         {
             if (amount > 0)
             {
                 Balance += amount;
-                Console.WriteLine($"Deposited: {amount}. New Balance: {Balance}");
+                TransactionHistory.Add($"Deposited: {amount:C}. New Balance: {Balance:C}");
+                Console.WriteLine($"Deposited: {amount:C}. New Balance: {Balance:C}");
             }
             else
             {
-                Console.WriteLine("Deposit must be positive");
+                Console.WriteLine("Deposit must be positive.");
             }
         }
 
-        public void Withdraw(decimal amount)
+        public virtual void Withdraw(decimal amount)
         {
-            if(amount > 0 && amount <= Balance)
+            if (amount > 0 && amount <= Balance)
             {
                 Balance -= amount;
-                Console.WriteLine($"Withdrew: {amount}. New Balance: {Balance}");
+                TransactionHistory.Add($"Withdrew: {amount:C}. New Balance: {Balance:C}");
+                Console.WriteLine($"Withdrew: {amount:C}. New Balance: {Balance:C}");
             }
             else
             {
-                Console.WriteLine("Invalid withdrawl amount.");
+                Console.WriteLine("Invalid withdrawal amount or insufficient funds.");
             }
         }
 
-        public void CheckBalance()
+        public void DisplayTransactionHistory()
         {
-            Console.WriteLine($"Current Balance: {Balance}");
+            Console.WriteLine("Transaction History:");
+            foreach (var transaction in TransactionHistory)
+            {
+                Console.WriteLine(transaction);
+            }
         }
     }
 }
